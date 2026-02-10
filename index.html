@@ -1,14 +1,241 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>San Valentín</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nuestra Historia Final 💖</title>
+
+<style>
+body {
+  margin:0;
+  height:100vh;
+  overflow:hidden;
+  font-family:'Segoe UI', sans-serif;
+  background:black;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Intro pantalla negra estilo película */
+.intro {
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  text-align:center;
+  z-index:5;
+  cursor:pointer;
+}
+
+/* Escena principal */
+.scene {
+  display:none;
+  height:100vh;
+  width:100%;
+  align-items:center;
+  justify-content:center;
+  background: radial-gradient(circle at bottom, #ff9ecb, #ff4d88 60%, #1a0010);
+}
+
+.card {
+  background: rgba(0,0,0,0.35);
+  padding:40px;
+  border-radius:25px;
+  backdrop-filter: blur(10px);
+  box-shadow:0 0 40px rgba(255,255,255,0.25);
+  text-align:center;
+  animation: zoomIn 1.8s ease forwards;
+}
+
+@keyframes zoomIn {
+  from {transform: scale(0.7); opacity:0;}
+  to {transform: scale(1); opacity:1;}
+}
+
+h1 {
+  font-size:34px;
+  animation: glow 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow:0 0 10px #fff; }
+  to { text-shadow:0 0 25px #ffb3d9; }
+}
+
+button {
+  padding:14px 22px;
+  margin:12px;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  cursor:pointer;
+  transition: all 0.3s ease;
+}
+
+.yes { 
+  background:#ff4d88; 
+  color:white;
+}
+
+.yes:hover {
+  background:#ff3366;
+  transform: scale(1.05);
+}
+
+.no { 
+  background:#ffffff22; 
+  color:white;
+  position: relative;
+}
+
+.no:hover {
+  background:#ffffff33;
+}
+
+.letter {
+  display:none;
+  margin-top:18px;
+  font-size:20px;
+  animation: fadeIn 1.2s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* corazones */
+.heart {
+  position:fixed;
+  bottom:-20px;
+  font-size:22px;
+  animation: rise linear forwards;
+  pointer-events: none;
+}
+
+@keyframes rise {
+  to {
+    transform:translateY(-110vh) scale(1.4);
+    opacity:0;
+  }
+}
+
+</style>
 </head>
+
 <body>
-    <h1>Bienvenidos a la celebración de San Valentín</h1>
-    <p>¡Celebremos el amor y la amistad!</p>
-    <audio controls autoplay loop style="display:none;">
-        <source src="https://api.soundcloud.com/tracks/1150986196/stream?client_id=YOUR_CLIENT_ID" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+
+<div class="intro" id="intro">
+🎬 Nuestra historia está por comenzar…<br><br>
+✨ TOCA LA PANTALLA ✨
+</div>
+
+<!-- Audio de SoundCloud de fondo (silencioso) -->
+<audio id="audioPlayer" style="display:none;" autoplay loop muted>
+  <source src="https://soundcloud.com/fonseca-official/cartagena" type="audio/mpeg">
+</audio>
+
+<div class="scene" id="scene">
+  <div class="card">
+    <h1>Stephania… 💖</h1>
+    <p>Solo hay una pregunta…</p>
+    <h2>¿Quieres ser mi San Valentín?</h2>
+
+    <div id="buttons">
+      <button class="yes" onclick="sayYes()">Sí 💕</button>
+      <button class="no" onmouseover="moveNo(this)">No 🙈</button>
+    </div>
+
+    <div class="letter" id="letter">
+    Entonces prepárate…<br>
+    porque esta historia apenas comienza 💞<br><br>
+    Ve preparando la maleta…<br>
+    nos vamos a la playita 🏖️🌊
+    </div>
+  </div>
+</div>
+
+<script>
+
+let movieStarted = false;
+let heartInterval = null;
+
+// Evitar múltiples clics en intro
+document.getElementById("intro").addEventListener("click", function startMovie() {
+  if (movieStarted) return;
+  movieStarted = true;
+  
+  this.style.display="none";
+  document.getElementById("scene").style.display="flex";
+  
+  // Reproducir audio
+  const audio = document.getElementById("audioPlayer");
+  audio.muted = false;
+  audio.play().catch(e => console.log("Autoplay bloqueado:", e));
+
+  startHearts();
+});
+
+// Botón "No" se mueve dentro de límites
+function moveNo(btn) {
+  const btnWidth = 80;
+  const btnHeight = 50;
+  
+  const maxX = Math.max(0, window.innerWidth - btnWidth);
+  const maxY = Math.max(0, window.innerHeight - btnHeight);
+  
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+  
+  btn.style.position = "fixed";
+  btn.style.left = x + "px";
+  btn.style.top = y + "px";
+}
+
+// Mostrar mensaje cuando dice "Sí"
+function sayYes() {
+  document.getElementById("buttons").style.display="none";
+  document.getElementById("letter").style.display="block";
+  
+  // Aumentar frecuencia de corazones
+  clearInterval(heartInterval);
+  heartInterval = setInterval(createHeart, 100);
+  
+  // Detener después de 8 segundos
+  setTimeout(() => {
+    clearInterval(heartInterval);
+    heartInterval = setInterval(createHeart, 250);
+  }, 8000);
+}
+
+// Crear un corazón individual
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerHTML = "💖";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (Math.random() * 4 + 4) + "s";
+  document.body.appendChild(heart);
+  
+  setTimeout(() => heart.remove(), 8000);
+}
+
+// Iniciar corazones con intervalo controlado
+function startHearts(){
+  heartInterval = setInterval(createHeart, 250);
+}
+
+// Limpiar al cerrar la página
+window.addEventListener("beforeunload", () => {
+  if (heartInterval) clearInterval(heartInterval);
+});
+
+</script>
+
 </body>
 </html>
