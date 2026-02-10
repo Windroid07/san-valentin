@@ -13,77 +13,90 @@
             background: linear-gradient(135deg, #ff9a9e, #fecfef); text-align: center; color: #d63384;
             overflow: hidden;
         }
-        .container { width: 90%; max-width: 450px; z-index: 10; position: relative; }
-        h1 { font-family: 'Dancing Script', cursive; font-size: 3.5rem; margin-bottom: 10px; }
-        p { background: rgba(255,255,255,0.5); padding: 20px; border-radius: 20px; line-height: 1.6; }
+        .container { width: 90%; max-width: 450px; z-index: 10; position: relative; padding: 20px; }
+        h1 { font-family: 'Dancing Script', cursive; font-size: 3.2rem; margin-bottom: 10px; }
+        p { background: rgba(255,255,255,0.6); padding: 20px; border-radius: 20px; line-height: 1.6; font-size: 1.1rem; }
         .btn {
-            background: #ff4d6d; color: white; border: none; padding: 15px 30px;
+            background: #ff4d6d; color: white; border: none; padding: 18px 35px;
             font-size: 1.2rem; border-radius: 50px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255,77,109,0.5); margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255,77,109,0.5); margin-top: 20px; transition: 0.3s;
         }
+        .btn:hover { transform: scale(1.05); background: #ff0a54; }
         .hidden { display: none; }
         .tam-text {
-            font-size: 3rem; font-weight: 900; color: #ff0054;
-            animation: pulse 1s infinite; margin-top: 20px;
+            font-size: 3.5rem; font-weight: 900; color: #ff0054;
+            animation: pulse 0.8s infinite; margin-top: 20px;
+            text-shadow: 3px 3px 0px rgba(255,255,255,0.5);
         }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        #player { position: absolute; top: -1000px; left: -1000px; }
+        /* Corazones flotantes */
+        .heart-bg { position: absolute; color: rgba(255,255,255,0.5); animation: float 6s infinite linear; z-index: 1; }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="player"></div>
+    <audio id="musica" preload="auto">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        </audio>
 
-    <div class="container" id="sc1">
-        <h1>Para Stephania</h1>
-        <p>Tengo algo que decirte, pero primero activa el sonido de esta carta...</p>
-        <button class="btn" onclick="activarTodo()">Abrir sobre 💌</button>
-    </div>
+    <div id="pantallas">
+        <div class="container" id="sc1">
+            <div style="font-size: 4rem;">💌</div>
+            <h1>Para Stephania</h1>
+            <p>Tengo algo muy especial que decirte... <br>¿Lo abres?</p>
+            <button class="btn" onclick="iniciar()">Abrir sobre ❤️</button>
+        </div>
 
-    <div class="container hidden" id="sc2">
-        <h1>Escucha... 🌊</h1>
-        <p>¿Te imaginas nosotros en Cartagena?<br>Caminando por la playa, con el sol, la música y tú así de hermosa...</p>
-        <button class="btn" onclick="cambiar(2,3)">Siguiente</button>
-    </div>
+        <div class="container hidden" id="sc2">
+            <div style="font-size: 4rem;">🏖️</div>
+            <h1>Escucha...</h1>
+            <p>Esta canción me hace pensar en nosotros en la playa, bajo el sol de Cartagena... tú y yo, nada más.</p>
+            <button class="btn" onclick="cambiar(2,3)">Siguiente ✨</button>
+        </div>
 
-    <div class="container hidden" id="sc3">
-        <h1>Stephania... ❤️</h1>
-        <p style="font-size: 1.5rem; font-weight: 900;">¿Quieres ser mi San Valentín?</p>
-        <button class="btn" onclick="celebrar()">¡SÍ, ACEPTO! ✈️</button>
-    </div>
+        <div class="container hidden" id="sc3">
+            <div style="font-size: 4rem;">🌹</div>
+            <h1>Stephania...</h1>
+            <p style="font-size: 1.5rem; font-weight: 900;">¿Quieres ser mi San Valentín?</p>
+            <button class="btn" onclick="celebrar()">¡SÍ, CLARO! ✈️</button>
+        </div>
 
-    <div class="container hidden" id="sc4">
-        <h1>¡NOS VAMOS A LA PLAYA! 🏖️</h1>
-        <p>Prepárate para lo mejor...</p>
-        <div class="tam-text">TAMMMMMMM ❤️</div>
+        <div class="container hidden" id="sc4">
+            <div style="font-size: 4rem;">🥂</div>
+            <h1>¡NOS VAMOS A LA PLAYA!</h1>
+            <p>Prepárate para lo mejor amor...</p>
+            <div class="tam-text">TAMMMMMMM ❤️</div>
+        </div>
     </div>
 
     <script>
-        var player;
+        // Función para la música de Fonseca (Cartagena)
+        // Usamos un reproductor de Youtube oculto pero activado por el botón
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
+        var player;
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
+            player = new YT.Player('musica-yt', {
                 height: '0', width: '0',
-                videoId: 'wT3RyQy5Owc',
-                events: { 'onReady': onPlayerReady }
+                videoId: 'wT3RyQy5Owc', // ID de Cartagena - Fonseca
+                playerVars: { 'autoplay': 0, 'controls': 0, 'playsinline': 1 }
             });
         }
 
-        function onPlayerReady(event) {
-            console.log("Música lista.");
-        }
-
-        function activarTodo() {
-            // Intentar reproducir música
+        function iniciar() {
+            // Reproducir música al primer clic (esto sí lo permite el navegador)
             if (player && player.playVideo) {
                 player.playVideo();
-                player.setVolume(100);
             }
-            cambiar(1,2);
+            cambiar(1, 2);
+            crearCorazones();
         }
 
         function cambiar(actual, siguiente) {
@@ -92,21 +105,30 @@
         }
 
         function celebrar() {
-            cambiar(3,4);
-            var duration = 15 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+            cambiar(3, 4);
+            // Confeti
+            var end = Date.now() + (15 * 1000);
+            (function frame() {
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff4d6d', '#ffffff'] });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff4d6d', '#ffffff'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
 
-            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-            var interval = setInterval(function() {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) return clearInterval(interval);
-                var particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
+        function crearCorazones() {
+            setInterval(() => {
+                const h = document.createElement('div');
+                h.classList.add('heart-bg');
+                h.innerHTML = '❤️';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.fontSize = Math.random() * 20 + 10 + 'px';
+                h.style.duration = Math.random() * 3 + 3 + 's';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 6000);
+            }, 300);
         }
     </script>
+    
+    <div id="musica-yt"></div>
 </body>
 </html>
