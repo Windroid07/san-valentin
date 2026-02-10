@@ -1,134 +1,44 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Stephania ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <style>
-        body {
-            margin: 0; padding: 0; font-family: 'Montserrat', sans-serif;
-            height: 100vh; display: flex; justify-content: center; align-items: center;
-            background: linear-gradient(135deg, #ff9a9e, #fecfef); text-align: center; color: #d63384;
-            overflow: hidden;
+    <title>San Valentin</title>
+    <script>
+        let autoplayEnabled = false;
+        let clickEnabled = true;
+        let noButtonBoundary = 3; // Maximum number of times No can be clicked
+        let noButtonClicks = 0;
+
+        function toggleAutoplay() {
+            autoplayEnabled = !autoplayEnabled;
+            // Logic for autoplay functionality
+            if (autoplayEnabled) {
+                // Start autoplay
+            } else {
+                // Stop autoplay
+            }
         }
-        .container { width: 90%; max-width: 450px; z-index: 10; position: relative; padding: 20px; }
-        h1 { font-family: 'Dancing Script', cursive; font-size: 3.2rem; margin-bottom: 10px; }
-        p { background: rgba(255,255,255,0.6); padding: 20px; border-radius: 20px; line-height: 1.6; font-size: 1.1rem; }
-        .btn {
-            background: #ff4d6d; color: white; border: none; padding: 18px 35px;
-            font-size: 1.2rem; border-radius: 50px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255,77,109,0.5); margin-top: 20px; transition: 0.3s;
+
+        function handleNoClick() {
+            if (clickEnabled && noButtonClicks < noButtonBoundary) {
+                noButtonClicks++;
+                // Logic for handling No button click
+            }
+            if (noButtonClicks >= noButtonBoundary) {
+                clickEnabled = false; // Prevent further clicks
+                // Additional logic when boundary is reached
+            }
         }
-        .btn:hover { transform: scale(1.05); background: #ff0a54; }
-        .hidden { display: none; }
-        .tam-text {
-            font-size: 3.5rem; font-weight: 900; color: #ff0054;
-            animation: pulse 0.8s infinite; margin-top: 20px;
-            text-shadow: 3px 3px 0px rgba(255,255,255,0.5);
-        }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        /* Corazones flotantes */
-        .heart-bg { position: absolute; color: rgba(255,255,255,0.5); animation: float 6s infinite linear; z-index: 1; }
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-        }
-    </style>
+
+        window.addEventListener('beforeunload', function () {
+            // Clean up any resources to prevent memory leaks
+        });
+    </script>
 </head>
 <body>
-
-    <audio id="musica" preload="auto">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        </audio>
-
-    <div id="pantallas">
-        <div class="container" id="sc1">
-            <div style="font-size: 4rem;">💌</div>
-            <h1>Para Stephania</h1>
-            <p>Tengo algo muy especial que decirte... <br>¿Lo abres?</p>
-            <button class="btn" onclick="iniciar()">Abrir sobre ❤️</button>
-        </div>
-
-        <div class="container hidden" id="sc2">
-            <div style="font-size: 4rem;">🏖️</div>
-            <h1>Escucha...</h1>
-            <p>Esta canción me hace pensar en nosotros en la playa, bajo el sol de Cartagena... tú y yo, nada más.</p>
-            <button class="btn" onclick="cambiar(2,3)">Siguiente ✨</button>
-        </div>
-
-        <div class="container hidden" id="sc3">
-            <div style="font-size: 4rem;">🌹</div>
-            <h1>Stephania...</h1>
-            <p style="font-size: 1.5rem; font-weight: 900;">¿Quieres ser mi San Valentín?</p>
-            <button class="btn" onclick="celebrar()">¡SÍ, CLARO! ✈️</button>
-        </div>
-
-        <div class="container hidden" id="sc4">
-            <div style="font-size: 4rem;">🥂</div>
-            <h1>¡NOS VAMOS A LA PLAYA!</h1>
-            <p>Prepárate para lo mejor amor...</p>
-            <div class="tam-text">TAMMMMMMM ❤️</div>
-        </div>
-    </div>
-
-    <script>
-        // Función para la música de Fonseca (Cartagena)
-        // Usamos un reproductor de Youtube oculto pero activado por el botón
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-        var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('musica-yt', {
-                height: '0', width: '0',
-                videoId: 'wT3RyQy5Owc', // ID de Cartagena - Fonseca
-                playerVars: { 'autoplay': 0, 'controls': 0, 'playsinline': 1 }
-            });
-        }
-
-        function iniciar() {
-            // Reproducir música al primer clic (esto sí lo permite el navegador)
-            if (player && player.playVideo) {
-                player.playVideo();
-            }
-            cambiar(1, 2);
-            crearCorazones();
-        }
-
-        function cambiar(actual, siguiente) {
-            document.getElementById('sc' + actual).classList.add('hidden');
-            document.getElementById('sc' + siguiente).classList.remove('hidden');
-        }
-
-        function celebrar() {
-            cambiar(3, 4);
-            // Confeti
-            var end = Date.now() + (15 * 1000);
-            (function frame() {
-                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff4d6d', '#ffffff'] });
-                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff4d6d', '#ffffff'] });
-                if (Date.now() < end) requestAnimationFrame(frame);
-            }());
-        }
-
-        function crearCorazones() {
-            setInterval(() => {
-                const h = document.createElement('div');
-                h.classList.add('heart-bg');
-                h.innerHTML = '❤️';
-                h.style.left = Math.random() * 100 + 'vw';
-                h.style.fontSize = Math.random() * 20 + 10 + 'px';
-                h.style.duration = Math.random() * 3 + 3 + 's';
-                document.body.appendChild(h);
-                setTimeout(() => h.remove(), 6000);
-            }, 300);
-        }
-    </script>
-    
-    <div id="musica-yt"></div>
+    <h1>Welcome to San Valentin</h1>
+    <button onclick="toggleAutoplay()">Toggle Autoplay</button>
+    <button onclick="handleNoClick()">No</button>
 </body>
 </html>
